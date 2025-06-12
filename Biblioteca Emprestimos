@@ -1,0 +1,175 @@
+import javax.swing.*;
+
+public class Main {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Gestão de Biblioteca");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
+
+        JButton btnEmprestimo = new JButton("Empréstimo de Livro");
+        btnEmprestimo.setBounds(100, 30, 200, 30);
+        btnEmprestimo.addActionListener(e -> EmprestimoTela.exibir());
+
+        JButton btnDevolucao = new JButton("Devolução de Livro");
+        btnDevolucao.setBounds(100, 70, 200, 30);
+        btnDevolucao.addActionListener(e -> DevolucaoTela.exibir());
+
+        JButton btnHistorico = new JButton("Histórico de Empréstimos");
+        btnHistorico.setBounds(100, 110, 200, 30);
+        btnHistorico.addActionListener(e -> HistoricoTela.exibir());
+
+        JButton btnMultas = new JButton("Gestão de Multas");
+        btnMultas.setBounds(100, 150, 200, 30);
+        btnMultas.addActionListener(e -> MultasTela.exibir());
+
+        frame.add(btnEmprestimo);
+        frame.add(btnDevolucao);
+        frame.add(btnHistorico);
+        frame.add(btnMultas);
+
+        frame.setVisible(true);
+    }
+}
+import javax.swing.*;
+import java.util.ArrayList;
+
+public class EmprestimoTela {
+
+    public static ArrayList<String> emprestimos = new ArrayList<>();
+
+    public static void exibir() {
+        JFrame frame = new JFrame("Empréstimo de Livro");
+        frame.setSize(400, 300);
+        frame.setLayout(null);
+
+        JLabel lblLivro = new JLabel("Livro:");
+        lblLivro.setBounds(50, 30, 80, 30);
+        frame.add(lblLivro);
+
+        JTextField txtLivro = new JTextField();
+        txtLivro.setBounds(150, 30, 180, 30);
+        frame.add(txtLivro);
+
+        JLabel lblAluno = new JLabel("Aluno:");
+        lblAluno.setBounds(50, 70, 80, 30);
+        frame.add(lblAluno);
+
+        JTextField txtAluno = new JTextField();
+        txtAluno.setBounds(150, 70, 180, 30);
+        frame.add(txtAluno);
+
+        JButton btnSalvar = new JButton("Salvar Empréstimo");
+        btnSalvar.setBounds(100, 150, 180, 40);
+        frame.add(btnSalvar);
+
+        btnSalvar.addActionListener(e -> {
+            String livro = txtLivro.getText();
+            String aluno = txtAluno.getText();
+
+            if(livro.isEmpty() || aluno.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Preencha todos os campos!");
+            } else {
+                String registro = "Livro: " + livro + " | Aluno: " + aluno;
+                emprestimos.add(registro);
+                JOptionPane.showMessageDialog(frame, "Empréstimo salvo com sucesso!");
+                frame.dispose();
+            }
+        });
+
+        frame.setVisible(true);
+    }
+}
+import javax.swing.*;
+
+public class HistoricoTela {
+
+    public static void exibir() {
+        JFrame frame = new JFrame("Histórico de Empréstimos");
+        frame.setSize(400, 300);
+        frame.setLayout(null);
+
+        JTextArea area = new JTextArea();
+        area.setBounds(20, 20, 340, 200);
+
+        StringBuilder historico = new StringBuilder();
+        for(String registro : EmprestimoTela.emprestimos) {
+            historico.append(registro).append("\n");
+        }
+        area.setText(historico.toString());
+
+        frame.add(area);
+        frame.setVisible(true);
+    }
+}
+import javax.swing.*;
+
+public class DevolucaoTela {
+
+    public static void exibir() {
+        JFrame frame = new JFrame("Devolução de Livro");
+        frame.setSize(400, 250);
+        frame.setLayout(null);
+
+        JLabel lblLivro = new JLabel("Livro devolvido:");
+        lblLivro.setBounds(50, 50, 100, 30);
+        frame.add(lblLivro);
+
+        JTextField txtLivro = new JTextField();
+        txtLivro.setBounds(160, 50, 160, 30);
+        frame.add(txtLivro);
+
+        JButton btnDevolver = new JButton("Confirmar Devolução");
+        btnDevolver.setBounds(100, 120, 180, 40);
+        frame.add(btnDevolver);
+
+        btnDevolver.addActionListener(e -> {
+            String livro = txtLivro.getText();
+
+            boolean encontrado = EmprestimoTela.emprestimos.removeIf(s -> s.contains("Livro: " + livro));
+            if(encontrado) {
+                JOptionPane.showMessageDialog(frame, "Devolução registrada com sucesso!");
+                frame.dispose();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Empréstimo não encontrado.");
+            }
+        });
+
+        frame.setVisible(true);
+    }
+}
+
+import javax.swing.*;
+
+public class MultasTela {
+
+    public static void exibir() {
+        JFrame frame = new JFrame("Gestão de Multas");
+        frame.setSize(400, 250);
+        frame.setLayout(null);
+
+        JLabel lblDias = new JLabel("Dias de atraso:");
+        lblDias.setBounds(50, 50, 100, 30);
+        frame.add(lblDias);
+
+        JTextField txtDias = new JTextField();
+        txtDias.setBounds(160, 50, 160, 30);
+        frame.add(txtDias);
+
+        JButton btnCalcular = new JButton("Calcular Multa");
+        btnCalcular.setBounds(100, 120, 180, 40);
+        frame.add(btnCalcular);
+
+        btnCalcular.addActionListener(e -> {
+            try {
+                int dias = Integer.parseInt(txtDias.getText());
+                double multa = dias * 1.5; // Exemplo: 1,50 por dia
+                JOptionPane.showMessageDialog(frame, "Multa: R$ " + multa);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Digite um número válido!");
+            }
+        });
+
+        frame.setVisible(true);
+    }
+}
